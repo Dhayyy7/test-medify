@@ -1,4 +1,4 @@
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     @csrf
     @if($method == 'edit')
     <div class="form-group">
@@ -47,6 +47,37 @@
             <optio @if($selected == 'ATK') selected @endif>ATK</option>
         </select>
     </div>
+
+    <div class="form-group">
+        <label>Kategori</label>
+        <div>
+            @php
+                $selectedIds = old('categories', []);
+                if(empty($selectedIds) && isset($item) && is_object($item) && isset($item->categories)) {
+                    $selectedIds = $item->categories->pluck('id')->toArray();
+                }
+            @endphp
+            @foreach($categories as $cat)
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="categories[]" id="cat_{{ $cat->id }}" value="{{ $cat->id }}" @if(in_array($cat->id, (array)$selectedIds)) checked @endif>
+                    <label class="form-check-label" for="cat_{{ $cat->id }}">{{ $cat->nama }} ({{ $cat->kode }})</label>
+                </div>
+            @endforeach
+        </div>
+        <small class="form-text text-muted">Centang satu atau lebih kategori untuk item ini.</small>
+    </div>
+
+     <div class="form-group">
+        <label>Foto Barang</label>
+        <input type="file" class="form-control" name="foto" accept="image/*">
+    </div>
+
+    {{-- Jika edit dan sudah ada foto --}}
+    @if(isset($item) && !empty($item->img))
+        <div class="mt-2">
+            <img src="{{ asset('storage/'.$item->img) }}" alt="Foto Barang" width="100">
+        </div>
+    @endif
 
     <button class="btn btn-primary mt-3">Submit</button>
 

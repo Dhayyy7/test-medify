@@ -31,3 +31,12 @@ Route::get('/master-items/delete/{id}', [App\Http\Controllers\MasterItemsControl
 
 
 Route::get('/master-items/update-random-data', [App\Http\Controllers\MasterItemsController::class, 'updateRandomData']);
+
+// Category routes
+Route::get('/categories', [App\Http\Controllers\CategoryController::class, 'index']);
+Route::get('/categories/create', [App\Http\Controllers\CategoryController::class, 'create']);
+Route::post('/categories', [App\Http\Controllers\CategoryController::class, 'store']);
+Route::get('/categories/{id}/edit', [App\Http\Controllers\CategoryController::class, 'edit']);
+Route::put('/categories/{id}', [App\Http\Controllers\CategoryController::class, 'update']);
+Route::get('/categories/delete/{id}', [App\Http\Controllers\CategoryController::class, 'destroy']);
+Route::get('/categories/{id}', [App\Http\Controllers\CategoryController::class, 'show']);

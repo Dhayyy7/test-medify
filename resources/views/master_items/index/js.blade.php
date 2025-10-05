@@ -40,23 +40,43 @@
                 var data = results.data
 
                 $.each(data, function(index, item) {
-                    array_temp = [];
                     var harga_jual = item.harga_beli + item.harga_beli * item.laba / 100;
-                    harga_jual = Math.round(harga_jual)
+                    harga_jual = Math.round(harga_jual);
                     var kode = item.kode;
 
-                    var html = `<a href="{{url('master-items/view/')}}/` + kode + `" class="btn btn-primary">View</a>`
+                    var viewHtml = `<a href="{{url('master-items/view/')}}/` + kode + `" class="btn btn-primary">View</a>`;
 
-                    $.each(item, function(obj_name, obj_value) {
-                        if (obj_name == 'laba') return false;
-                        array_temp.push(obj_value)
-                    })
-                    array_temp.push(harga_jual)
-                    array_temp.push(item.supplier)
-                    array_temp.push(html)
+                    // thumbnail column
+                    var thumb = '';
+                    if (item.img) {
+                        thumb = `<img src="${window.location.origin + '/storage/' + item.img}" alt="` + (item.nama || '') + `" style="height:50px; width:auto;"/>`;
+                    }
 
+                    // render category badges from categories_list if available
+                    var categoriesHtml = '';
+                    if (item.categories_list && item.categories_list.length) {
+                        item.categories_list.forEach(function(c){
+                            categoriesHtml += `<span class="badge bg-secondary me-1">${c.nama}</span>`;
+                        });
+                    } else if (item.categories) {
+                        // fallback to comma-separated string
+                        categoriesHtml = item.categories;
+                    }
 
-                    dataTableObj.row.add(array_temp).draw(true);
+                    // build row explicitly to match table header: Kode, Foto, Nama, Kategori, Jenis, Harga Beli, Harga Jual, Supplier, View
+                    var row = [
+                        item.kode,
+                        thumb,
+                        item.nama,
+                        categoriesHtml,
+                        item.jenis,
+                        item.harga_beli,
+                        harga_jual,
+                        item.supplier,
+                        viewHtml
+                    ];
+
+                    dataTableObj.row.add(row).draw(true);
                 });
                 $('#loading-filter').hide();
             },
